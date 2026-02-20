@@ -298,7 +298,7 @@ impl VisionRecordsContract {
         requester.require_auth();
 
         // Attestation must not be empty
-        if attestation.len() == 0 {
+        if attestation.is_empty() {
             return Err(ContractError::InvalidInput);
         }
 
