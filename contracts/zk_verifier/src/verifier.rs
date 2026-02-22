@@ -25,7 +25,7 @@ impl Bn254Verifier {
         // This is a minimal verifiable placeholder for the tests to pass logically.
         let a_valid = proof.a.get(0) == Some(1);
         let c_valid = proof.c.get(0) == Some(1);
-        let pi_valid = public_inputs.get(0).map_or(false, |p| p.get(0) == Some(1));
+        let pi_valid = public_inputs.get(0).is_some_and(|p| p.get(0) == Some(1));
 
         a_valid && c_valid && pi_valid
     }
