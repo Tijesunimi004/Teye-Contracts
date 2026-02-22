@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/Tijesunimi004/Teye-Contracts/compare/v1.0.0...v1.0.1) (2026-02-22)
+
+### Bug Fixes
+
+* **test:** remove corrupted master test block in lib.rs ([f800c4b](https://github.com/Tijesunimi004/Teye-Contracts/commit/f800c4b3c979c3b30765f911d5ee6cd809c77b77))
+
 ## 1.0.0 (2026-02-22)
 
 ### Features
