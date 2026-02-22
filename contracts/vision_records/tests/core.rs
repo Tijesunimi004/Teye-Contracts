@@ -177,17 +177,24 @@ fn test_events_and_version() {
 
     // Test register user event
     let user = Address::generate(&ctx.env);
-    ctx.client.register_user(&ctx.admin, &user, &Role::Patient, &String::from_str(&ctx.env, "Patient Profile"));
+    ctx.client.register_user(
+        &ctx.admin,
+        &user,
+        &Role::Patient,
+        &String::from_str(&ctx.env, "Patient Profile"),
+    );
     assert_eq!(ctx.env.events().all().len(), 1); // Kills publish_user_registered mutant
 
     // Test add record event
     let provider = create_test_user(&ctx, Role::Optometrist, "Provider");
     let hash = String::from_str(&ctx.env, "Hash123");
-    ctx.client.add_record(&provider, &user, &provider, &RecordType::Examination, &hash);
+    ctx.client
+        .add_record(&provider, &user, &provider, &RecordType::Examination, &hash);
     assert_eq!(ctx.env.events().all().len(), 1); // Kills publish_record_added mutant
 
     // Test access grant/revoke event
-    ctx.client.grant_access(&user, &user, &provider, &AccessLevel::Read, &86400);
+    ctx.client
+        .grant_access(&user, &user, &provider, &AccessLevel::Read, &86400);
     assert_eq!(ctx.env.events().all().len(), 1); // Kills publish_access_granted mutant
 
     ctx.client.revoke_access(&user, &provider);

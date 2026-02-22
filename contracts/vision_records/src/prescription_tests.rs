@@ -17,6 +17,7 @@ fn test_prescription_workflow() {
 
     // Register doctor
     client.register_user(
+        &admin,
         &doctor,
         &Role::Optometrist,
         &String::from_str(&env, "Dr. Eye"),
@@ -59,6 +60,7 @@ fn test_prescription_workflow() {
     // Verify prescription
     let pharmacist = Address::generate(&env);
     client.register_user(
+        &admin,
         &pharmacist,
         &Role::Admin,
         &String::from_str(&env, "Pharmacist"),
@@ -89,6 +91,7 @@ fn test_contact_lens_workflow() {
     let patient = Address::generate(&env);
     let doctor = Address::generate(&env);
     client.register_user(
+        &admin,
         &doctor,
         &Role::Optometrist,
         &String::from_str(&env, "Dr. Contact"),

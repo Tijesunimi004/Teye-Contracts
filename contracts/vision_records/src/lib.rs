@@ -1,10 +1,13 @@
 #![no_std]
+#![allow(clippy::too_many_arguments)]
+
 use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, symbol_short, Address, Env, String,
     Symbol, Vec,
 };
 
 mod prescription;
+#[cfg(test)]
 mod prescription_tests;
 pub mod rbac;
 
@@ -120,9 +123,11 @@ pub enum ContractError {
 }
 
 #[contract]
+#[allow(clippy::too_many_arguments)]
 pub struct VisionRecordsContract;
 
 #[contractimpl]
+#[allow(clippy::too_many_arguments)]
 impl VisionRecordsContract {
     /// Initialize the contract with an admin address
     pub fn initialize(env: Env, admin: Address) -> Result<(), ContractError> {
@@ -345,6 +350,7 @@ impl VisionRecordsContract {
     }
 
     /// Add a new prescription
+    #[allow(clippy::too_many_arguments)]
     pub fn add_prescription(
         env: Env,
         patient: Address,
