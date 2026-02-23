@@ -1,4 +1,5 @@
-use crate::{AccessLevel, RecordType, Role};
+use crate::errors::ErrorContext;
+use crate::{AccessLevel, RecordType, Role, VerificationStatus};
 use soroban_sdk::{symbol_short, Address, Env, String};
 
 /// Event published when the contract is initialized.
@@ -78,6 +79,8 @@ pub fn publish_initialized(env: &Env, admin: Address) {
     env.events().publish(topics, data);
 }
 
+/// Publishes an event when a new user is registered.
+/// This event includes the user address, role, name, and registration timestamp.
 pub fn publish_user_registered(env: &Env, user: Address, role: Role, name: String) {
     let topics = (symbol_short!("USR_REG"), user.clone());
     let data = UserRegisteredEvent {
@@ -89,6 +92,8 @@ pub fn publish_user_registered(env: &Env, user: Address, role: Role, name: Strin
     env.events().publish(topics, data);
 }
 
+/// Publishes an event when a new vision record is added.
+/// This event includes the record ID, patient, provider, record type, and timestamp.
 pub fn publish_record_added(
     env: &Env,
     record_id: u64,
@@ -107,6 +112,8 @@ pub fn publish_record_added(
     env.events().publish(topics, data);
 }
 
+/// Publishes an event when access is granted to a record.
+/// This event includes patient, grantee, access level, duration, expiration, and timestamp.
 pub fn publish_access_granted(
     env: &Env,
     patient: Address,
@@ -127,6 +134,8 @@ pub fn publish_access_granted(
     env.events().publish(topics, data);
 }
 
+/// Publishes an event when access to a record is revoked.
+/// This event includes the patient, grantee, and revocation timestamp.
 pub fn publish_access_revoked(env: &Env, patient: Address, grantee: Address) {
     let topics = (symbol_short!("ACC_REV"), patient.clone(), grantee.clone());
     let data = AccessRevokedEvent {
