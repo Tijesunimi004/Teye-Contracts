@@ -13,7 +13,7 @@ fn test_initialization() {
     let admin = Address::generate(&env);
 
     // Initialize should succeed
-    assert_eq!(client.initialize(&admin), ());
+    client.initialize(&admin);
 }
 
 #[test]
@@ -48,7 +48,7 @@ fn test_add_relayer() {
     client.initialize(&admin);
 
     // Admin adding relayer should succeed
-    assert_eq!(client.add_relayer(&admin, &relayer), ());
+    client.add_relayer(&admin, &relayer);
     assert!(client.is_relayer(&relayer));
 }
 
@@ -88,10 +88,7 @@ fn test_map_identity() {
     let foreign_address = String::from_str(&env, "0x12345");
     let local_patient = Address::generate(&env);
 
-    assert_eq!(
-        client.map_identity(&admin, &foreign_chain, &foreign_address, &local_patient),
-        ()
-    );
+    client.map_identity(&admin, &foreign_chain, &foreign_address, &local_patient);
 
     let retrieved_address = client
         .get_local_address(&foreign_chain, &foreign_address)
