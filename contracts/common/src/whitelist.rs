@@ -2,6 +2,14 @@ use soroban_sdk::{symbol_short, Address, Env, Symbol};
 
 const WL_ENABLED: Symbol = symbol_short!("WL_EN");
 const WL_ADDR: Symbol = symbol_short!("WL_ADR");
+const WL_TTL_THRESHOLD: u32 = 5_184_000; // ~60 days
+const WL_TTL_EXTEND_TO: u32 = 10_368_000; // ~120 days
+
+fn extend_whitelist_ttl(env: &Env, key: &(Symbol, Address)) {
+    env.storage()
+        .persistent()
+        .extend_ttl(key, WL_TTL_THRESHOLD, WL_TTL_EXTEND_TO);
+}
 
 /// Enables or disables whitelist enforcement globally for the contract.
 pub fn set_whitelist_enabled(env: &Env, enabled: bool) {
@@ -15,9 +23,11 @@ pub fn is_whitelist_enabled(env: &Env) -> bool {
 
 /// Adds an address to the whitelist.
 pub fn add_to_whitelist(env: &Env, address: &Address) {
+    let key = (WL_ADDR, address.clone());
     env.storage()
         .persistent()
-        .set(&(WL_ADDR, address.clone()), &true);
+        .set(&key, &true);
+    extend_whitelist_ttl(env, &key);
 }
 
 /// Removes an address from the whitelist.
@@ -27,10 +37,12 @@ pub fn remove_from_whitelist(env: &Env, address: &Address) {
 
 /// Returns whether an address is in the whitelist.
 pub fn is_whitelisted(env: &Env, address: &Address) -> bool {
-    env.storage()
-        .persistent()
-        .get(&(WL_ADDR, address.clone()))
-        .unwrap_or(false)
+    let key = (WL_ADDR, address.clone());
+    let is_whitelisted = env.storage().persistent().get(&key).unwrap_or(false);
+    if is_whitelisted {
+        extend_whitelist_ttl(env, &key);
+    }
+    is_whitelisted
 }
 
 /// Returns whether the address is allowed to call guarded functions.

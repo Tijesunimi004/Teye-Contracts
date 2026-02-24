@@ -112,6 +112,38 @@ fn test_whitelist_register_user_and_add_record_enforcement() {
 }
 
 #[test]
+fn test_whitelist_enforced_for_add_records_batch() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let contract_id = env.register(VisionRecordsContract, ());
+    let client = VisionRecordsContractClient::new(&env, &contract_id);
+
+    let admin = Address::generate(&env);
+    let provider = Address::generate(&env);
+    let patient = Address::generate(&env);
+    client.initialize(&admin);
+
+    client.set_whitelist_enabled(&admin, &true);
+    client.remove_from_whitelist(&admin, &provider);
+
+    let mut records = Vec::new(&env);
+    records.push_back(BatchRecordInput {
+        patient: patient.clone(),
+        record_type: RecordType::Examination,
+        data_hash: String::from_str(&env, "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"),
+    });
+
+    let blocked = client.try_add_records(&provider, &records);
+    assert!(blocked.is_err());
+    assert!(matches!(blocked.unwrap_err(), Ok(ContractError::Unauthorized)));
+
+    client.add_to_whitelist(&admin, &provider);
+    let allowed = client.try_add_records(&provider, &records);
+    assert!(allowed.is_ok());
+}
+
+#[test]
 fn test_whitelist_admin_only_management() {
     let env = Env::default();
     env.mock_all_auths();

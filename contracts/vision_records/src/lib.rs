@@ -562,6 +562,10 @@ impl VisionRecordsContract {
             return Err(ContractError::InvalidInput);
         }
 
+        if !whitelist::require_whitelisted(&env, &provider) {
+            return Err(ContractError::Unauthorized);
+        }
+
         // Check provider has WriteRecord permission once for the whole batch
         if !rbac::has_permission(&env, &provider, &Permission::WriteRecord)
             && !rbac::has_permission(&env, &provider, &Permission::SystemAdmin)
