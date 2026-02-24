@@ -12,7 +12,7 @@ cargo install cargo-fuzz
 rustup default nightly
 ```
 
-## Running the Fuzzers 
+## Running the Fuzzers
 The workspace has a comprehensive `fuzz` setup at the root directory targeting the smart contracts. To run a specific fuzzer campaign (e.g. `vision_records_fuzz` or `staking_fuzz`), use:
 
 ```bash

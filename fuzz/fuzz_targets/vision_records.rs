@@ -22,11 +22,11 @@ pub enum FuzzAction {
 fuzz_target!(|actions: Vec<FuzzAction>| {
     let env = Env::default();
     let admin = Address::generate(&env);
-    
+
     // Register contract
     let contract_id = env.register(VisionRecordsContract, ());
     let client = VisionRecordsContractClient::new(&env, &contract_id);
-    
+
     // Initialize
     let _ = client.try_initialize(&admin);
 
@@ -46,21 +46,21 @@ fuzz_target!(|actions: Vec<FuzzAction>| {
                     2 => Role::Ophthalmologist,
                     _ => Role::Admin,
                 };
-                
+
                 // create random string
                 let mut name_bytes = vec![b'a'; name_len as usize];
                 if name_len > 100 {
                     name_bytes.truncate(100);
                 }
-                
+
                 let name = match std::str::from_utf8(&name_bytes) {
                     Ok(s) => String::from_str(&env, s),
                     Err(_) => String::from_str(&env, "test"),
                 };
-                
+
                 // Random caller
                 let caller = &users[name_len as usize % users.len()];
-                
+
                 let _ = client.try_register_user(caller, &user, &role_enum, &name);
                 users.push(user);
             }
@@ -73,7 +73,7 @@ fuzz_target!(|actions: Vec<FuzzAction>| {
                     4 => RecordType::Surgery,
                     _ => RecordType::LabResult,
                 };
-                
+
                 // Create random hash string. Use exact 32-char length if hash_len % 2 == 0 to hit success paths,
                 // or random length to hit errors.
                 let hash_str = if hash_len % 2 == 0 {
@@ -82,10 +82,10 @@ fuzz_target!(|actions: Vec<FuzzAction>| {
                     "a".repeat((hash_len as usize % 50) + 1)
                 };
                 let hash = String::from_str(&env, &hash_str);
-                
+
                 let patient = &users[hash_len as usize % users.len()];
                 let caller = &users[(hash_len as usize + 1) % users.len()];
-                
+
                 let _ = client.try_add_record(caller, patient, &provider, &r_type, &hash);
             }
         }
